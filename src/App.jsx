@@ -9,40 +9,24 @@ class App extends Component {
     this.socket = new WebSocket("ws://localhost:3001/");
     this.state = {
       currentUser: {name: "Bob"},
-      messages:  [
-        {
-          username: "Bob",
-          content: "Has anyone seen my marbles?",
-          id: "msg1"
-        }
-      ]
+      messages:  []
     }
     this.updateUser = this.updateUser.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
   }
   componentDidMount() {
     console.log("componentDidMount <App />");
-    // setTimeout(() => {
-    //   console.log("Simulating incoming message");
-    //   //Add a new message to the list of messages in the data store
-    //   const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-    //   const messages = this.state.messages.concat(newMessage)
-    //   this.setState({messages: messages});
-    // }, 3000)
+
     const ws = this.socket;
     ws.onopen = function (event) {
-      ws.send("Here's some text that the server is urgently awaiting!"); 
       console.log("Connected to server!")
     }
     const messageArray = [];
     const oldMessages = this.state.messages;
+    //when message is received, turn received message into object, push new message object to array, add this message to the state
       ws.onmessage = function (event) {
-        console.log("event data:", event.data)
         let newMessage = JSON.parse(event.data);
-        console.log("new message:", newMessage)
         messageArray.push(newMessage)
-        console.log(messageArray);
-        console.log("message array", messageArray);
         this.setState({messages: oldMessages.concat(messageArray)})
       }.bind(this)
   };
