@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import ChatBar from './ChatBar.jsx';
-import Message from './Message.jsx';
 import MessageList from './MessageList.jsx';
 
 class App extends Component {
@@ -21,6 +20,9 @@ class App extends Component {
         }
       ]
     }
+    this.updateUser = this.updateUser.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+    //this.handleChange = this.handleChange.bind(this);
   }
   componentDidMount() {
     console.log("componentDidMount <App />");
@@ -32,12 +34,32 @@ class App extends Component {
       this.setState({messages: messages});
     }, 3000)
   }
-  
+
+  updateUser(event){
+    this.setState({currentUser: {name: event.target.value}})
+    console.log("current user updated to:", event.target.value)
+  }
+
+  handleKeyPress(event){
+    if (event.keyCode === 13) {
+      console.log('Enter was pressed');
+
+      const newMessage = {
+        username: this.state.currentUser.name,
+        content: event.target.value,
+        id: new Date().toString()
+      }
+      const newMessages = this.state.messages.concat(newMessage)
+      this.setState({messages: newMessages});
+      event.target.value = "";
+      }
+    }
+
   render() {
     return (
       <div> 
         <MessageList messages={this.state.messages}/>
-        <ChatBar currentUser={this.state.currentUser.name}/>
+        <ChatBar currentUser={this.state.currentUser.name} updateUser={this.updateUser} handleKeyPress={this.handleKeyPress} />
       </div>
     );
   }
