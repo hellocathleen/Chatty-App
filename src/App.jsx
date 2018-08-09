@@ -7,7 +7,7 @@ class App extends Component {
     super(props);
     this.socket = new WebSocket("ws://localhost:3001/");
     this.state = {
-      currentUser: {name: "Bob"},
+      currentUser: {name: "Anonymous"},
       messages: [],
       //notifications: []
     }
@@ -52,7 +52,7 @@ class App extends Component {
     
 
   updateUser(event){
-    if (this.state.currentUser.name !== event.target.value) {
+    if (this.state.currentUser.name !== event.target.value && event.target.value) {
     console.log("current user updated to:", event.target.value)
     var note = {
       type: "postNotification",
