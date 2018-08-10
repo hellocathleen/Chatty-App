@@ -8,13 +8,13 @@ class App extends Component {
     super(props);
     this.socket = new WebSocket("ws://localhost:3001/");
     this.state = {
-      userColor: randomColor(),
+      userColor: randomColor({luminosity: 'dark' || 'bright'}),
       userCount: '',
       currentUser: {name: "Anonymous"},
       messages: []
     }
     this.updateUser = this.updateUser.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.addMessage = this.addMessage.bind(this);
   }
   componentDidMount() {
     console.log("componentDidMount <App />");
@@ -68,7 +68,7 @@ class App extends Component {
     }
   }
 
-  handleKeyPress(event){
+  addMessage(event){
     if (event.keyCode === 13) {
       console.log('Enter was pressed');
       console.log(this.state.currentUser.color);
@@ -84,7 +84,9 @@ class App extends Component {
   }
 
   numUsers(num) {
-    if (num === 1) {
+    if (num == false) {
+      return "0 users online";
+    } else if (num === 1) {
       return this.state.userCount + " user online";
     } else {
       return this.state.userCount + " users online";
@@ -100,7 +102,7 @@ class App extends Component {
       </nav>
       <div> 
         <MessageList messages={this.state.messages} />
-        <ChatBar currentUser={this.state.currentUser.name} updateUser={this.updateUser} handleKeyPress={this.handleKeyPress} />
+        <ChatBar currentUser={this.state.currentUser.name} updateUser={this.updateUser} addMessage={this.addMessage} />
       </div>
       </div>
     );
