@@ -4,7 +4,7 @@ const ws = require('ws');
 const uuidv1 = require('uuid/v1');
 
 const PORT = 3001;
-//Create a new express server
+
 const server = express()
 //make the express server serve static assets (html, js, css) from the /public folder
   .use(express.static('public'))
@@ -30,7 +30,7 @@ wss.on('connection', (ws) => {
       userCount: wss.clients.size,
       id: uuidv1()
     }
-    broadcastMessage(JSON.stringify(userChangeMessage))
+    broadcastMessage(JSON.stringify(userChangeMessage));
   })
 });
 

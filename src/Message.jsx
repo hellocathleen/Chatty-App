@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 
-
-
 class Message extends Component {
   
   render() {
@@ -10,11 +8,10 @@ class Message extends Component {
     };
     let image;
     let messageContent;
-    console.log("IMAGE?", /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/.test(this.props.content));
+    //check if there is a .jpg/png/gif 
     if (/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/.test(this.props.content)) {
       const urlRegex = /(https?:\/\/[^ ]*)/;
       image = this.props.content.match(urlRegex)[0];
-      console.log("image after regex", image);
       messageContent = this.props.content.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '');
     } else {
       messageContent = this.props.content;

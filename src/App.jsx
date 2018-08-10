@@ -24,61 +24,55 @@ class App extends Component {
       console.log("Connected to server!")
     };
     let messageArray = [];
-    //when message is received, turn received message into object, push new message object to array, add this message to the state
+    //when message is received, turn received message into object
       ws.onmessage = function (event) {
         let newMessage = JSON.parse(event.data);
         console.log("newMessage", newMessage)
         switch(newMessage.type) {
           case "incomingMessage":
             //handle incoming message
-            messageArray.push(newMessage)
-            this.setState({messages: this.state.messages.concat(messageArray)})
+            messageArray.push(newMessage);
+            this.setState({messages: this.state.messages.concat(messageArray)});
             messageArray = [];
             break;
           case "incomingNotification":
             //handle incoming notification
-            console.log(newMessage)
-            messageArray.push(newMessage)
-            this.setState({messages: this.state.messages.concat(messageArray)})
+            messageArray.push(newMessage);
+            this.setState({messages: this.state.messages.concat(messageArray)});
             messageArray = [];
             break;
           case "userCountChanged":
             //handle user count change
-            console.log("usercount case", newMessage.userCount)
-            this.setState({userCount: newMessage.userCount})
+            this.setState({userCount: newMessage.userCount});
             break;
           default:
           //show an error in the console if the message type is unknown
             throw new Error("Unknown event type " + newMessage.type);
         }
-        console.log("STATE:", this.state)
-      }.bind(this)
+      }.bind(this);
   };
     
 
   updateUser(event){
     if (this.state.currentUser.name !== event.target.value && event.target.value) {
-    console.log("current user updated to:", event.target.value)
-    var note = {
+    const note = {
       type: "postNotification",
-      notification: `${this.state.currentUser.name} has changed their name to ${event.target.value}`,
+      notification: `${this.state.currentUser.name} has changed their name to ${event.target.value}`
       }
-    this.socket.send(JSON.stringify(note))
-    this.setState({currentUser: {name: event.target.value}})
+    this.socket.send(JSON.stringify(note));
+    this.setState({currentUser: {name: event.target.value}});
     }
   }
 
   addMessage(event){
     if (event.keyCode === 13) {
-      console.log('Enter was pressed');
-      console.log(this.state.currentUser.color);
-      var msg = {
+      const msg = {
         type: "postMessage",
         username: this.state.currentUser.name,
         content: event.target.value,
         color: this.state.userColor
       }
-      this.socket.send(JSON.stringify(msg))
+      this.socket.send(JSON.stringify(msg));
       event.target.value = "";
     }
   }

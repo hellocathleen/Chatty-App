@@ -1,4 +1,4 @@
-$main-color: rgb(75, 199, 172);
+$main-color: #8fb5fc;
 
 h1 {
   color: $main-color;
@@ -65,6 +65,11 @@ body {
 .message-username {
   flex: 2;
   font-weight: 700;
+}
+
+.msgImage {
+  max-width: 60%;
+  max-height: 60%;
 }
 
 .navbar {
