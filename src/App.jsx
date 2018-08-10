@@ -1,15 +1,17 @@
 import React, {Component} from 'react';
 import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
+import randomColor from 'randomcolor';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.socket = new WebSocket("ws://localhost:3001/");
     this.state = {
+      userColor: randomColor(),
+      userCount: '',
       currentUser: {name: "Anonymous"},
-      messages: [],
-      //notifications: []
+      messages: []
     }
     this.updateUser = this.updateUser.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
@@ -22,17 +24,15 @@ class App extends Component {
       console.log("Connected to server!")
     };
     let messageArray = [];
-    // const notificationArray = [];
     //when message is received, turn received message into object, push new message object to array, add this message to the state
       ws.onmessage = function (event) {
         let newMessage = JSON.parse(event.data);
-        console.log(newMessage)
+        console.log("newMessage", newMessage)
         switch(newMessage.type) {
           case "incomingMessage":
             //handle incoming message
             messageArray.push(newMessage)
             this.setState({messages: this.state.messages.concat(messageArray)})
-            console.log("STATE", this.state.messages)
             messageArray = [];
             break;
           case "incomingNotification":
@@ -40,13 +40,18 @@ class App extends Component {
             console.log(newMessage)
             messageArray.push(newMessage)
             this.setState({messages: this.state.messages.concat(messageArray)})
-            console.log("STATE", this.state.messages)
             messageArray = [];
-              break;
+            break;
+          case "userCountChanged":
+            //handle user count change
+            console.log("usercount case", newMessage.userCount)
+            this.setState({userCount: newMessage.userCount})
+            break;
           default:
           //show an error in the console if the message type is unknown
             throw new Error("Unknown event type " + newMessage.type);
         }
+        console.log("STATE:", this.state)
       }.bind(this)
   };
     
@@ -66,21 +71,37 @@ class App extends Component {
   handleKeyPress(event){
     if (event.keyCode === 13) {
       console.log('Enter was pressed');
+      console.log(this.state.currentUser.color);
       var msg = {
         type: "postMessage",
         username: this.state.currentUser.name,
         content: event.target.value,
+        color: this.state.userColor
       }
       this.socket.send(JSON.stringify(msg))
       event.target.value = "";
     }
   }
 
+  numUsers(num) {
+    if (num === 1) {
+      return this.state.userCount + " user online";
+    } else {
+      return this.state.userCount + " users online";
+    }
+  }
+
   render() {
     return (
       <div> 
-        <MessageList messages={this.state.messages}/>
+      <nav className="navbar">
+        <a href="/" className="navbar-brand">Chatty</a>
+        <span className="navbar-count">{this.numUsers(this.state.userCount)}</span>
+      </nav>
+      <div> 
+        <MessageList messages={this.state.messages} />
         <ChatBar currentUser={this.state.currentUser.name} updateUser={this.updateUser} handleKeyPress={this.handleKeyPress} />
+      </div>
       </div>
     );
   }
