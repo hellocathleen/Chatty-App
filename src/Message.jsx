@@ -8,10 +8,26 @@ class Message extends Component {
     const fontColor = {
       color: this.props.color
     };
+    let image;
+    let messageContent;
+    console.log("IMAGE?", /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/.test(this.props.content));
+    if (/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/.test(this.props.content)) {
+      const urlRegex = /(https?:\/\/[^ ]*)/;
+      image = this.props.content.match(urlRegex)[0];
+      console.log("image after regex", image);
+      messageContent = this.props.content.replace(/(?:https?|ftp):\/\/[\n\S]+/g, '');
+    } else {
+      messageContent = this.props.content;
+    }
+
     return (
         <div className="message">
           <span className="message-username" style={fontColor}>{this.props.username}</span>
-          <span className="message-content">{this.props.content}</span>
+          <span className="message-content">
+          {messageContent}
+          <br />
+          <img className="msgImage" src={image} />
+          </span>
         </div>
     );
   }

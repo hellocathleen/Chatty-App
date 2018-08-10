@@ -97,7 +97,7 @@ class App extends Component {
     return (
       <div> 
       <nav className="navbar">
-        <a href="/" className="navbar-brand">Chatty</a>
+        <a href="/" className="navbar-brand">ChitChat</a>
         <span className="navbar-count">{this.numUsers(this.state.userCount)}</span>
       </nav>
       <div> 
